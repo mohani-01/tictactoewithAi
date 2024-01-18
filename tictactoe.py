@@ -22,6 +22,23 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
+    x = 0
+    o = 0
+    for row in board:
+        for column in board:
+            if column == X:
+                x += 1
+            elif column == O:
+                o += 1
+
+    if x == 0 and o == 0:
+        return "X"
+    elif x > o:
+        return "O"
+    elif x < o:
+        return "X"
+
+
     raise NotImplementedError
 
 
@@ -29,7 +46,14 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    available = set()
+    for i, row in enumerate(board) :
+        for j, column in enumerate(row) :
+            if column is None:
+                available.add((i, j))
+            
+    return available
+    # raise NotImplementedError
 
 
 def result(board, action):
