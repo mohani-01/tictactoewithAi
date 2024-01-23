@@ -3,7 +3,7 @@ Tic Tac Toe Player
 """
 from util import Node
 import math
-from copy import copy
+from copy import deepcopy
 
 X = "X"
 O = "O"
@@ -67,8 +67,9 @@ def result(board, action):
 
     i , j = action
     
-
-    changeboard = copy(board)
+    if (j > 2 or j < 0) or (i> 2 or i < 0):
+        raise ValueError("Action given are out of bound")
+    changeboard = deepcopy(board)
 
     if changeboard[i][j] != None:
         raise ValueError("This play have already have a value") 
@@ -96,7 +97,7 @@ def winner(board):
         thirdx, thirdy = win[2]
 
         if board[firstx][firsty] == board[secondx][secondy] == board[thirdx][thirdy] and board[thirdx][thirdy] != EMPTY:
-            print(board[firstx][firsty] == board[secondx][secondy] == board[thirdx][thirdy] and board[thirdx][thirdy] != EMPTY)
+            # print(board[firstx][firsty] == board[secondx][secondy] == board[thirdx][thirdy] and board[thirdx][thirdy] != EMPTY)
             return board[firstx][firsty]
     else:
         return None
@@ -134,17 +135,34 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
+    if terminal(board):
+        return None
     # nNode(state=board, action=None, parent=None)
-    if player(board) == "X":
-        for action in actions(board): 
-            # print(result(board, action), "HI")
-            max_value(board)
-    else:
-        for action in actions(board):
-            min_value(board)
-    
 
-    # raise NotImplementedError
+    if player(board) == "X":
+        total_actions = {}
+        for action in actions(board): 
+            value =  max_value(board)
+          
+            total_actions[action] = value
+
+        print(total_actions)
+        for action in total_actions:
+            print(total_actions[action])
+            if total_actions[action] > float('-inf'):
+                return action
+
+    else:
+        total_actions = {}
+        for action in actions(board):
+            value = min_value(board)
+            total_actions[action] = value
+
+        print(total_actions)
+        for action in total_actions:
+            print(total_actions[action])
+            if total_actions[action] < float('inf'):
+                return action
 
 def max_value(state):
     if terminal(state):
@@ -174,4 +192,4 @@ def min_value(state):
 
 
 
-minimax(initial_state())
+# minimax(initial_state())
