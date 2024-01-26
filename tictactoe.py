@@ -27,10 +27,9 @@ def player(board):
     o_value = 0
     for row in board:
         for column in row:
-            # print(column == X)
             if column == X:
-                
                 x_value += 1
+
             elif column == O:
                 o_value += 1
    
@@ -42,8 +41,6 @@ def player(board):
     elif x_value == o_value:
         return "X"
 
-
-    # raise NotImplementedError
 
 
 def actions(board):
@@ -57,7 +54,6 @@ def actions(board):
                 available.add((i, j))
             
     return available
-    # raise NotImplementedError
 
 
 def result(board, action):
@@ -66,15 +62,17 @@ def result(board, action):
     """
 
     i , j = action
-    
+    # Check if the action is valid
     if (j > 2 or j < 0) or (i> 2 or i < 0):
         raise ValueError("Action given are out of bound")
+
     changeboard = deepcopy(board)
 
     if changeboard[i][j] != None:
         raise ValueError("This play have already have a value") 
      
     changeboard[i][j] = player(changeboard)
+
     return changeboard
 
 
@@ -97,12 +95,9 @@ def winner(board):
         thirdx, thirdy = win[2]
 
         if board[firstx][firsty] == board[secondx][secondy] == board[thirdx][thirdy] and board[thirdx][thirdy] != EMPTY:
-            # print(board[firstx][firsty] == board[secondx][secondy] == board[thirdx][thirdy] and board[thirdx][thirdy] != EMPTY)
             return board[firstx][firsty]
-    else:
-        return None
-
-    # raise NotImplementedError
+    
+    return None
 
 
 def terminal(board):
@@ -111,24 +106,26 @@ def terminal(board):
     """
     if winner(board):
         return True
+
     for rows in board:
         for column in rows:
             if column == EMPTY:
                 return False
 
     return True
+
+    
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    wins = winner(board)
-    if  wins == "X":
+    win = winner(board)
+    if  win == "X":
         return 1
-    elif wins == "O":
+    elif win == "O":
         return -1
     else:
         return 0
-    # raise NotImplementedError
 
 
 def minimax(board):
@@ -137,16 +134,15 @@ def minimax(board):
     """
     if terminal(board):
         return None
-    # nNode(state=board, action=None, parent=None)
 
     if player(board) == "X":
         total_actions = {}
         for action in actions(board): 
             value =  max_value(board)
-          
+            if value == 1:
+                return action
             total_actions[action] = value
 
-        print(total_actions)
         for action in total_actions:
             print(total_actions[action])
             if total_actions[action] > float('-inf'):
@@ -156,17 +152,17 @@ def minimax(board):
         total_actions = {}
         for action in actions(board):
             value = min_value(board)
+            if value == -1:
+                return action
+                
             total_actions[action] = value
 
-        print(total_actions)
         for action in total_actions:
-            print(total_actions[action])
             if total_actions[action] < float('inf'):
                 return action
 
 def max_value(state):
     if terminal(state):
-        # print(state)
         return utility(state)
     
     v = float('-inf')
